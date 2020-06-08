@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sopa de letras</title>
+  <link rel="stylesheet" type="text/css" href="styles/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container">
+  <p class="title">Razas Caninas</p>
+  <div id='werds'>
+   
+  </div>
+  <div id='puzzle'></div>
+  <div id='words' style="display: none;"></div>
+</div>
+
+
+<div class="bgpopup" style="display: none;">
+  <div class="popup">
+    <h2>¡Felicidades, ganaste!</h2>
+    <a href="#" id="replay" class="button">
+      Volver a jugar
+    </a>
+  </div>
+  
+</div>
+<!-- <div><button id='solve'>Solve Puzzle</button></div> -->
+
+<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+<script type="text/javascript" src="../src/wordfind.js"></script> 
+<script type="text/javascript" src="scripts/wordfindgame.js"></script> 
+<script>
+
+  var words = ['Malamute', 'Bichon Frise', 'Boxer', 'Bulldog', 'Bull Terrier', 'Cocker Spaniel',
+               'Collie', 'Chihuaha', 'Chow Chow', 'Dalmata', 'Doberman', 'Dogo',
+               'Esquimal', 'Gran Danés', 'Labrador', 'Lebrel', 'Mastín', 'Pastor Alemán',
+               'Pekinés', 'Perro Peruano', 'Rottweiler', 'Salchicha', 'San Bernardo', 'Shanauzer'];
+  var werds = [];
+
+
+  const removeAccents = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  } 
+
+  var ulWerd = '<ul>';
+  for (var i = 0, len = words.length; i < len; i++){
+    var newword = words[i].replace(/ /g, "");
+    newword = removeAccents(newword);
+    werds.push(newword);
+
+    var word = words[i];
+    var werd = word.replace(/ /g, "");
+    werd = removeAccents(werd);
+    ulWerd += '<li class="word ' + werd + '">' + word;
+  }
+
+  $('#werds').html(ulWerd);
+
+
+  
+  // start a word find game
+  var gamePuzzle = wordfindgame.create(werds, '#puzzle', '#words');
+
+  $('#solve').click( function() {
+    wordfindgame.solve(gamePuzzle, werds);
+  });
+
+  // create just a puzzle, without filling in the blanks and print to console
+  var puzzle = wordfind.newPuzzle(
+    werds, 
+    {height: 18, width:18, fillBlanks: false}
+  );
+  
+  wordfind.print(puzzle);
+
+  $("#replay").on('click',function(e){
+    e.preventDefault();
+    $(".puzzleSquare").removeClass('found');
+    $(".word").removeClass('wordFound');
+    $(".bgpopup").hide();
+    var gamePuzzle = wordfindgame.create(werds, '#puzzle', '#words');
+   
+  })
+
+</script>
+</body>
+</html>
